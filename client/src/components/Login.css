@@ -1,0 +1,139 @@
+.login-page {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 16px;
+  background: #EBF5FB;
+  min-height: calc(100vh - 60px);
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .05);
+}
+
+/* Header */
+.login-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.login-logo-icon {
+  font-size: 42px;
+  display: block;
+  margin-bottom: 14px;
+  line-height: 1;
+}
+
+.login-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1A5276;
+  margin-bottom: 4px;
+}
+
+.login-header p {
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* Password toggle */
+.pass-toggle {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color .15s;
+}
+
+.pass-toggle:hover { color: #475569; }
+
+/* Forgot row */
+.forgot-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: -4px 0 16px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #2E86C1;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  transition: color .15s;
+}
+
+.link-btn:hover {
+  color: #1A5276;
+  text-decoration: underline;
+}
+
+/* Google button */
+.btn-google {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.btn-google:hover {
+  border-color: #93C9EF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+/* Sign up CTA */
+.signup-cta {
+  text-align: center;
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 16px;
+}
+
+@media (max-width: 480px) {
+  .login-card { padding: 28px 20px; }
+}
