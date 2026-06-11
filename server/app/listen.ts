@@ -8,6 +8,6 @@ export default function listen(app: Express) {
     });
   }
   if (env == "production") {
-    app.listen();
+    app.listen(process.env.PORT);
   }
 }
