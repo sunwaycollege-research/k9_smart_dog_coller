@@ -1,0 +1,21 @@
+{
+  "username": "john_doe",
+  "email": "john@example.com",
+  "pets": [
+    {
+      "_id": "64a1f2c3e4b5d6789abcdef0"
+    }
+  ],
+  "home":{
+    "latitude": 37.7749,
+    "longitude": -122.4194
+  },
+  "createdAt": {
+    "date": "2026-06-12T05:21:23.972Z"
+  },
+  "updatedAt": {
+    "date": "2026-06-12T05:21:23.972Z"
+  }
+}
+
+

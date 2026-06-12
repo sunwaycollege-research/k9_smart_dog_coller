@@ -1,0 +1,189 @@
+  {
+    "_id": "64a1f2c3e4b5d6789abcdef0",
+    "petId": "64a1f2c3e4b5d6789abcdef0",
+    "collarId": "64a1f2c3e4b5d6789abcdef1",
+    "coordinates": {
+      "latitude": 37.7749,
+      "longitude": -122.4194
+    },
+    "heartRate": 85,
+    "temperature": 38.5,
+    "batteryLevel": 60,
+    "status": "active",
+    "history": [
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefa1",
+        "coordinates": { "latitude": 37.7720, "longitude": -122.4160 },
+        "heartRate": 72,
+        "temperature": 38.1,
+        "batteryLevel": 100,
+        "status": "resting",
+        "time": "2024-07-01T06:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefa2",
+        "coordinates": { "latitude": 37.7728, "longitude": -122.4168 },
+        "heartRate": 95,
+        "temperature": 38.4,
+        "batteryLevel": 99,
+        "status": "active",
+        "time": "2024-07-01T07:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefa3",
+        "coordinates": { "latitude": 37.7735, "longitude": -122.4175 },
+        "heartRate": 112,
+        "temperature": 38.9,
+        "batteryLevel": 98,
+        "status": "active",
+        "time": "2024-07-01T08:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefa4",
+        "coordinates": { "latitude": 37.7749, "longitude": -122.4194 },
+        "heartRate": 68,
+        "temperature": 38.2,
+        "batteryLevel": 95,
+        "status": "resting",
+        "time": "2024-07-01T13:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefa5",
+        "coordinates": { "latitude": 37.7749, "longitude": -122.4194 },
+        "heartRate": 64,
+        "temperature": 38.0,
+        "batteryLevel": 93,
+        "status": "sleeping",
+        "time": "2024-07-01T15:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefa6",
+        "coordinates": { "latitude": 37.7755, "longitude": -122.4200 },
+        "heartRate": 101,
+        "temperature": 38.6,
+        "batteryLevel": 90,
+        "status": "active",
+        "time": "2024-07-01T18:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefa7",
+        "coordinates": { "latitude": 37.7762, "longitude": -122.4210 },
+        "heartRate": 118,
+        "temperature": 39.0,
+        "batteryLevel": 89,
+        "status": "active",
+        "time": "2024-07-01T19:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefa8",
+        "coordinates": { "latitude": 37.7749, "longitude": -122.4194 },
+        "heartRate": 60,
+        "temperature": 37.9,
+        "batteryLevel": 86,
+        "status": "sleeping",
+        "time": "2024-07-01T23:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefa9",
+        "coordinates": { "latitude": 37.7749, "longitude": -122.4194 },
+        "heartRate": 62,
+        "temperature": 37.8,
+        "batteryLevel": 83,
+        "status": "sleeping",
+        "time": "2024-07-02T06:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefaa",
+        "coordinates": { "latitude": 37.7731, "longitude": -122.4171 },
+        "heartRate": 99,
+        "temperature": 38.5,
+        "batteryLevel": 81,
+        "status": "active",
+        "time": "2024-07-02T08:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefab",
+        "coordinates": { "latitude": 37.7800, "longitude": -122.4250 },
+        "heartRate": 130,
+        "temperature": 39.4,
+        "batteryLevel": 79,
+        "status": "active",
+        "time": "2024-07-02T10:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefac",
+        "coordinates": { "latitude": 37.7800, "longitude": -122.4250 },
+        "heartRate": 120,
+        "temperature": 39.2,
+        "batteryLevel": 78,
+        "status": "active",
+        "time": "2024-07-02T11:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefad",
+        "coordinates": { "latitude": 37.7749, "longitude": -122.4194 },
+        "heartRate": 74,
+        "temperature": 38.3,
+        "batteryLevel": 75,
+        "status": "resting",
+        "time": "2024-07-02T14:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefae",
+        "coordinates": { "latitude": 37.7749, "longitude": -122.4194 },
+        "heartRate": 66,
+        "temperature": 38.1,
+        "batteryLevel": 72,
+        "status": "sleeping",
+        "time": "2024-07-02T20:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefaf",
+        "coordinates": { "latitude": 37.7738, "longitude": -122.4180 },
+        "heartRate": 90,
+        "temperature": 38.4,
+        "batteryLevel": 69,
+        "status": "active",
+        "time": "2024-07-03T07:30:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefb0",
+        "coordinates": { "latitude": 37.7744, "longitude": -122.4188 },
+        "heartRate": 105,
+        "temperature": 38.7,
+        "batteryLevel": 67,
+        "status": "active",
+        "time": "2024-07-03T09:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefb1",
+        "coordinates": { "latitude": 37.7749, "longitude": -122.4194 },
+        "heartRate": 70,
+        "temperature": 38.2,
+        "batteryLevel": 65,
+        "status": "resting",
+        "time": "2024-07-03T12:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefb2",
+        "coordinates": { "latitude": 37.7756, "longitude": -122.4202 },
+        "heartRate": 97,
+        "temperature": 38.5,
+        "batteryLevel": 63,
+        "status": "active",
+        "time": "2024-07-03T17:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefb3",
+        "coordinates": { "latitude": 37.7749, "longitude": -122.4194 },
+        "heartRate": 63,
+        "temperature": 37.9,
+        "batteryLevel": 61,
+        "status": "sleeping",
+        "time": "2024-07-03T22:00:00.000Z"
+      }
+    ],
+    "__v": 0,
+    "createdAt": "2024-07-01T06:00:00.000Z",
+    "updatedAt": "2024-07-03T22:00:00.000Z"
+  }

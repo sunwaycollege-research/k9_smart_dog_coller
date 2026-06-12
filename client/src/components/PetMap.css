@@ -1,0 +1,116 @@
+.pet-map-wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  position: relative;
+}
+
+/* Dot markers injected via L.divIcon — must be global */
+.pm-dot {
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, .35);
+}
+
+.pm-dot-current {
+  width: 16px;
+  height: 16px;
+  background: #2E86C1;
+  box-shadow: 0 0 0 4px rgba(46, 134, 193, .25), 0 1px 5px rgba(0, 0, 0, .3);
+}
+
+.pm-dot-start {
+  width: 10px;
+  height: 10px;
+  background: #22c55e;
+}
+
+/* Legend overlay */
+.pm-legend {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+  background: rgba(255, 255, 255, .92);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 5px 10px;
+  pointer-events: none;
+}
+
+.pm-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.pm-ld {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pm-ld-start   { background: #22c55e; }
+.pm-ld-current { background: #2E86C1; }
+.pm-ld-safe    { background: rgba(34, 197, 94, .55); border: 1.5px solid #22c55e; }
+
+/* Home pin marker */
+.pm-home-pin {
+  width: 28px;
+  height: 28px;
+  background: #fff;
+  border: 2px solid #22c55e;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+}
+
+.pm-home-emoji {
+  transform: rotate(45deg);
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* Geofence status badge */
+.pm-fence-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  padding: 5px 11px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.pm-fence-in {
+  background: rgba(240, 253, 244, .95);
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+.pm-fence-out {
+  background: rgba(254, 242, 242, .95);
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+/* Remove default Leaflet border-radius on tiles */
+.pet-map-wrap .leaflet-container {
+  font-family: inherit;
+  border-radius: 12px;
+}
+
+.pet-map-wrap .leaflet-control-attribution {
+  font-size: 9px;
+}
