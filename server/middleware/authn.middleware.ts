@@ -35,31 +35,22 @@ export function isValidPassword(
 }
 
 /**
- * Creates a JWT token for the user
+ * Creates and returns a signed JWT token.
+ * Does NOT send any response — the caller owns the response.
  *
- * @param {Request} req - The request object
- * @param {Response} res - The response object
- * @param {NextFunction} next - The next function
- * @returns {void}
+ * @param {string} username - The user's username
+ * @param {string} email - The user's email
+ * @returns {string} Signed JWT token
  */
 
-export function createToken(req: Request, res: Response, next: NextFunction) {
+export function createToken(username: string, email: string): string {
   if (!process.env.JWT_SECRET) {
-    return res.status(500).json({ message: "Internal server error" });
+    throw new Error("JWT_SECRET is not defined");
   }
 
-  const { username, email } = req.body;
-
-  const token = jwt.sign(
-    {
-      username,
-      email,
-    },
+  return jwt.sign(
+    { username, email },
     process.env.JWT_SECRET,
-    {
-      expiresIn: "7d",
-    },
+    { expiresIn: "7d" },
   );
-
-  res.json({ token });
 }

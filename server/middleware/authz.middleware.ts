@@ -21,11 +21,15 @@ export async function isValidJWT(
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
   }
+  if (!process.env.JWT_SECRET) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
   try {
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET || "secret");
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decodedToken;
     next();
   } catch (error) {
+    console.error(error);
     return res.status(401).json({ message: "Unauthorized" });
   }
 }

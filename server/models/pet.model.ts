@@ -3,6 +3,8 @@ import mongoose, { Schema, Document } from "mongoose";
 interface IPet extends Document {
   name: string;
   breed: string;
+  collarModelNo: string;
+  collarId: mongoose.Types.ObjectId;
   age: number;
   gender: "male" | "female";
   color: string;
@@ -54,6 +56,15 @@ const PetSchema: Schema = new Schema({
     type: String,
     default: "",
   },
+  collarModelNo: {
+    type: String,
+    default: "",
+  },
+  collarId: {
+    type: Schema.Types.ObjectId,
+    ref: "Collar",
+    default: null,
+  },
   owner: {
     type: Schema.Types.ObjectId,
     ref: "User",
@@ -61,7 +72,7 @@ const PetSchema: Schema = new Schema({
   },
   ownerUsername: {
     type: String,
-    required: true,
+    default: "",
   },
   createdAt: {
     type: Date,

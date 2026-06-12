@@ -1,5 +1,7 @@
 import { Router } from "express";
-import petRouter from "../routes/user.route.js";
+import UserRouter from "../routes/user.route.js";
+import PetRouter from "../routes/pet.routes.js";
+import CollarRouter from "../routes/collar.routes.js";
 
 const appRouter = Router();
 
@@ -9,6 +11,8 @@ appRouter.get("/", (req, res) => {
   });
 });
 
-appRouter.use("/pet", petRouter);
+appRouter.use("/user", UserRouter);
+appRouter.use("/pet", PetRouter);
+appRouter.use("/collar", CollarRouter);
 
 export default appRouter;
