@@ -1,8 +1,27 @@
+/* ── Tokens ── */
+:root {
+  --gold:      #C9A84C;
+  --bg:        #060404;
+  --surface:   #0e0b08;
+  --surface2:  #141008;
+  --surface3:  #1c1810;
+  --border:    #262013;
+  --border-hi: #3a321d;
+  --text:      #e2dcd0;
+  --muted:     #9e988c;
+  --dimmed:    #544e40;
+  --danger-bg: #2b0f0f;
+  --danger-border: #521c1c;
+  --danger-text: #fca5a5;
+  --success-bg: #0f2b1c;
+}
+
 /* ── Page layout ── */
 .ah-page {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  color: var(--text);
 }
 
 /* ── Header ── */
@@ -18,34 +37,34 @@
   gap: 5px;
   height: 36px;
   padding: 0 14px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface3);
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: var(--gold);
   cursor: pointer;
   font-family: inherit;
   flex-shrink: 0;
   margin-top: 2px;
-  transition: border-color .15s, color .15s;
+  transition: all .15s;
 }
 
 .ah-back:hover {
-  border-color: #2E86C1;
-  color: #2E86C1;
+  background: var(--surface);
+  border-color: var(--border-hi);
 }
 
 .ah-title-group h2 {
   font-size: 20px;
   font-weight: 700;
-  color: #1A5276;
+  color: var(--text);
   margin-bottom: 3px;
 }
 
 .ah-title-group p {
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 /* ── Day tabs ── */
@@ -58,21 +77,21 @@
 .day-nav-btn {
   width: 34px;
   height: 34px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
-  color: #64748b;
+  background: var(--surface2);
+  color: var(--muted);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: border-color .15s, color .15s;
+  transition: all .15s;
 }
 
 .day-nav-btn:hover:not(:disabled) {
-  border-color: #2E86C1;
-  color: #2E86C1;
+  border-color: var(--border-hi);
+  color: var(--gold);
 }
 
 .day-nav-btn:disabled {
@@ -93,8 +112,8 @@
   align-items: center;
   gap: 2px;
   padding: 10px 8px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface2);
+  border: 1px solid var(--border);
   border-radius: 12px;
   cursor: pointer;
   font-family: inherit;
@@ -102,31 +121,31 @@
 }
 
 .day-tab:hover {
-  border-color: #93C9EF;
+  border-color: var(--border-hi);
 }
 
 .day-tab.active {
-  border-color: #2E86C1;
-  background: #E8F4FD;
+  border-color: var(--gold);
+  background: var(--surface3);
 }
 
 .day-tab-label {
   font-size: 13px;
   font-weight: 700;
-  color: #374151;
+  color: var(--muted);
 }
 
 .day-tab.active .day-tab-label {
-  color: #1A5276;
+  color: var(--gold);
 }
 
 .day-tab-date {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--dimmed);
 }
 
 .day-tab.active .day-tab-date {
-  color: #5BAEE3;
+  color: var(--muted);
 }
 
 .day-tab-dist {
@@ -135,16 +154,18 @@
   gap: 3px;
   font-size: 11px;
   font-weight: 600;
-  color: #2E86C1;
-  background: #E8F4FD;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-hi);
   padding: 2px 7px;
   border-radius: 20px;
   margin-top: 2px;
 }
 
-.day-tab:not(.active) .day-tab-dist {
-  color: #64748b;
-  background: #f1f5f9;
+.day-tab.active .day-tab-dist {
+  color: var(--bg);
+  background: var(--gold);
+  border-color: var(--gold);
 }
 
 /* ── Day summary cards ── */
@@ -155,8 +176,8 @@
 }
 
 .dsc {
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 14px 16px;
   display: flex;
@@ -165,8 +186,8 @@
 }
 
 .dsc-highlight {
-  border-color: #C5E3F7;
-  background: linear-gradient(135deg, #fff 60%, #f0f8ff);
+  border-color: var(--border-hi);
+  background: var(--surface3);
 }
 
 .dsc-icon {
@@ -177,31 +198,34 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--gold);
 }
 
 .dsc-val {
   font-size: 20px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text);
   line-height: 1.1;
 }
 
 .dsc-unit {
   font-size: 13px;
   font-weight: 500;
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 .dsc-lbl {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--dimmed);
   margin-top: 3px;
 }
 
 /* ── Map section ── */
 .ah-map-section {
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   overflow: hidden;
 }
@@ -216,13 +240,13 @@
 .ah-map-title {
   font-size: 13px;
   font-weight: 700;
-  color: #1A5276;
+  color: var(--gold);
   display: block;
 }
 
 .ah-map-sub {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted);
   display: block;
   margin-top: 2px;
 }
@@ -231,7 +255,7 @@
 .ah-map-section .pet-map-wrap {
   border-radius: 0;
   border: none;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--border);
 }
 
 /* Empty state */
@@ -239,7 +263,7 @@
   padding: 32px;
   text-align: center;
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 /* ── Filters ── */
@@ -253,7 +277,7 @@
 .filter-label {
   font-size: 12px;
   font-weight: 600;
-  color: #374151;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: .06em;
 }
@@ -261,33 +285,33 @@
 .filter-btn {
   height: 32px;
   padding: 0 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 20px;
   font-size: 13px;
   font-weight: 500;
-  color: #64748b;
-  background: #fff;
+  color: var(--muted);
+  background: var(--surface2);
   cursor: pointer;
   font-family: inherit;
   transition: all .15s;
 }
 
 .filter-btn:hover {
-  border-color: #93C9EF;
-  color: #2E86C1;
+  border-color: var(--border-hi);
+  color: var(--gold);
 }
 
 .filter-btn.active {
-  background: #E8F4FD;
-  border-color: #2E86C1;
-  color: #2E86C1;
+  background: var(--surface3);
+  border-color: var(--gold);
+  color: var(--gold);
   font-weight: 600;
 }
 
 .filter-count {
   margin-left: auto;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--dimmed);
 }
 
 /* Status chip */
@@ -300,6 +324,8 @@
   font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
+  background: var(--surface2);
+  border: 1px solid var(--border);
 }
 
 .status-dot {
@@ -311,8 +337,8 @@
 
 /* ── Table ── */
 .ah-table-wrap {
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   overflow: hidden;
 }
@@ -321,11 +347,12 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  color: var(--text);
 }
 
 .ah-table thead tr {
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
 }
 
 .ah-table th {
@@ -333,7 +360,7 @@
   text-align: left;
   font-size: 11px;
   font-weight: 700;
-  color: #374151;
+  color: var(--gold);
   text-transform: uppercase;
   letter-spacing: .06em;
   white-space: nowrap;
@@ -345,7 +372,7 @@
 }
 
 .ah-table th.sortable:hover {
-  color: #2E86C1;
+  color: #fff;
 }
 
 .th-inner {
@@ -359,7 +386,7 @@
 }
 
 .ah-table tbody tr {
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface2);
   transition: background .1s;
 }
 
@@ -368,7 +395,7 @@
 }
 
 .ah-table tbody tr:hover {
-  background: #f8fafc;
+  background: var(--surface3);
 }
 
 .ah-table td {
@@ -380,24 +407,24 @@
 .td-date {
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text);
 }
 
 .td-time {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted);
   margin-top: 2px;
 }
 
 .td-time-main {
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text);
 }
 
 .td-step-dist {
   font-size: 10px;
-  color: #2E86C1;
+  color: var(--gold);
   font-weight: 500;
   margin-top: 2px;
   display: flex;
@@ -415,16 +442,16 @@
 .td-num {
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text);
 }
 
 .td-unit {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 .td-metric.td-warn .td-num {
-  color: #dc2626;
+  color: var(--danger-text);
 }
 
 .td-flag {
@@ -443,7 +470,8 @@
 .td-bat-track {
   flex: 1;
   height: 6px;
-  background: #f1f5f9;
+  background: var(--surface2);
+  border: 1px solid var(--border);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -452,13 +480,14 @@
   height: 100%;
   border-radius: 3px;
   transition: width .3s;
+  background: var(--gold);
 }
 
 /* Coordinate cell */
 .td-coord {
   font-family: ui-monospace, Consolas, monospace;
   font-size: 12px;
-  color: #64748b;
+  color: var(--dimmed);
 }
 
 /* ── Responsive ── */

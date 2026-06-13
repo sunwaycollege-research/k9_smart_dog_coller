@@ -1,5 +1,6 @@
-import { Activity, Thermometer, BatteryFull, MapPin, Clock, History } from 'lucide-react'
+import { Activity, Thermometer, BatteryFull, MapPin, Clock, History, AlertCircle } from 'lucide-react'
 import petData from '../assets/data/mock_api_pet_arrtibutes.json'
+import type { PetAttributes } from '../store/apiSlice'
 import './CurrentAttributes.css'
 
 type Status = 'active' | 'resting' | 'sleeping'
@@ -9,8 +10,6 @@ const STATUS_CFG: Record<Status, { label: string; color: string; bg: string }> =
   resting:  { label: 'Resting',  color: '#d97706', bg: '#fef3c7' },
   sleeping: { label: 'Sleeping', color: '#7c3aed', bg: '#ede9fe' },
 }
-
-const recent = petData.history.slice(-8)
 
 function Sparkline({ data, color }: { data: number[]; color: string }) {
   const min = Math.min(...data)
@@ -45,6 +44,7 @@ function Sparkline({ data, color }: { data: number[]; color: string }) {
       />
       {/* Last point dot */}
       {(() => {
+        if (!pts) return null
         const last = pts.split(' ').pop()!
         const [lx, ly] = last.split(',')
         return <circle cx={lx} cy={ly} r="3" fill={color} />
@@ -67,29 +67,59 @@ function BatteryBar({ level }: { level: number }) {
 
 interface Props {
   onViewHistory: () => void
+  attributes?: PetAttributes | null
 }
 
-export default function CurrentAttributes({ onViewHistory }: Props) {
-  const status = petData.status as Status
+export default function CurrentAttributes({ onViewHistory, attributes }: Props) {
+  // If no attributes in DB yet, show the mock data but label it clearly.
+  const isDemo = !attributes
+  const source = attributes || petData
+
+  const status = (source.status || 'active') as Status
   const cfg = STATUS_CFG[status] ?? STATUS_CFG.active
+
+  const recent = source.history && source.history.length > 0
+    ? source.history.slice(-8)
+    : []
 
   const hrData  = recent.map(h => h.heartRate)
   const tmpData = recent.map(h => h.temperature)
   const batData = recent.map(h => h.batteryLevel)
 
-  const avgHR   = Math.round(petData.history.reduce((s, h) => s + h.heartRate, 0) / petData.history.length)
-  const avgTemp = (petData.history.reduce((s, h) => s + h.temperature, 0) / petData.history.length).toFixed(1)
-  const activeCount = petData.history.filter(h => h.status === 'active').length
-  const lastUpdated = new Date(petData.updatedAt).toLocaleString('en-US', {
-    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
-  })
+  // Cast history to a minimal typed array to avoid union-type ambiguity with mock JSON
+  type HistoryEntry = { heartRate: number; temperature: number; batteryLevel: number; status: string }
+  const history: HistoryEntry[] = (source.history ?? []) as HistoryEntry[]
+  const historyLen = history.length
+  const avgHR = historyLen
+    ? Math.round(history.reduce((s, h) => s + h.heartRate, 0) / historyLen)
+    : (source.heartRate ?? 0)
 
-  const hrWarn  = petData.heartRate > 120 || petData.heartRate < 50
-  const tmpWarn = petData.temperature > 39.2 || petData.temperature < 37.5
-  const batWarn = petData.batteryLevel < 20
+  const avgTemp = historyLen
+    ? (history.reduce((s, h) => s + h.temperature, 0) / historyLen).toFixed(1)
+    : (source.temperature ?? 0).toFixed(1)
+
+  const activeCount = history.filter(h => h.status === 'active').length
+
+  const lastUpdated = (source as any).updatedAt
+    ? new Date((source as any).updatedAt).toLocaleString('en-US', {
+        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+      })
+    : 'Never'
+
+  const hrWarn  = (source.heartRate ?? 0) > 120 || (source.heartRate ?? 0) < 50
+  const tmpWarn = (source.temperature ?? 0) > 39.2 || (source.temperature ?? 0) < 37.5
+  const batWarn = (source.batteryLevel ?? 0) < 20
 
   return (
     <div className="ca-page">
+      {/* Demo Warning Banner */}
+      {isDemo && (
+        <div className="lv-error" style={{ marginBottom: 16 }}>
+          <AlertCircle size={15} />
+          <span>Demo Data: Collar has not transmitted any coordinates or metrics yet.</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="ca-header">
         <div>
@@ -122,17 +152,26 @@ export default function CurrentAttributes({ onViewHistory }: Props) {
             <div className="mc-info">
               <span className="mc-label">Heart Rate</span>
               <div className="mc-value">
-                {petData.heartRate}
+                {source.heartRate ?? '--'}
                 <span className="mc-unit"> bpm</span>
               </div>
               <span className="mc-range">Normal: 50–120 bpm</span>
             </div>
           </div>
           <div className="mc-right">
-            <Sparkline data={hrData} color={hrWarn ? '#ef4444' : '#2E86C1'} />
-            <span className="mc-spark-lbl">Last 8 readings</span>
+            {hrData.length > 1 ? (
+              <Sparkline data={hrData} color={hrWarn ? '#ef4444' : '#2E86C1'} />
+            ) : (
+              <span className="mc-spark-lbl">Waiting for readings…</span>
+            )}
+            {hrData.length > 1 && <span className="mc-spark-lbl">Last {hrData.length} readings</span>}
           </div>
-          {hrWarn && <div className="mc-warn-badge">⚠ Out of range</div>}
+          {hrWarn && source.heartRate !== undefined && (
+            <div className="mc-warn-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <AlertCircle size={12} strokeWidth={2.5} />
+              <span>Out of range</span>
+            </div>
+          )}
         </div>
 
         {/* Temperature */}
@@ -144,17 +183,26 @@ export default function CurrentAttributes({ onViewHistory }: Props) {
             <div className="mc-info">
               <span className="mc-label">Body Temperature</span>
               <div className="mc-value">
-                {petData.temperature}
+                {source.temperature ?? '--'}
                 <span className="mc-unit"> °C</span>
               </div>
               <span className="mc-range">Normal: 37.5–39.2°C</span>
             </div>
           </div>
           <div className="mc-right">
-            <Sparkline data={tmpData} color={tmpWarn ? '#ef4444' : '#f97316'} />
-            <span className="mc-spark-lbl">Last 8 readings</span>
+            {tmpData.length > 1 ? (
+              <Sparkline data={tmpData} color={tmpWarn ? '#ef4444' : '#f97316'} />
+            ) : (
+              <span className="mc-spark-lbl">Waiting for readings…</span>
+            )}
+            {tmpData.length > 1 && <span className="mc-spark-lbl">Last {tmpData.length} readings</span>}
           </div>
-          {tmpWarn && <div className="mc-warn-badge">⚠ Out of range</div>}
+          {tmpWarn && source.temperature !== undefined && (
+            <div className="mc-warn-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <AlertCircle size={12} strokeWidth={2.5} />
+              <span>Out of range</span>
+            </div>
+          )}
         </div>
 
         {/* Battery */}
@@ -166,17 +214,26 @@ export default function CurrentAttributes({ onViewHistory }: Props) {
             <div className="mc-info">
               <span className="mc-label">Collar Battery</span>
               <div className="mc-value">
-                {petData.batteryLevel}
+                {source.batteryLevel ?? '--'}
                 <span className="mc-unit"> %</span>
               </div>
-              <BatteryBar level={petData.batteryLevel} />
+              <BatteryBar level={source.batteryLevel ?? 0} />
             </div>
           </div>
           <div className="mc-right">
-            <Sparkline data={batData} color={batWarn ? '#ef4444' : '#22c55e'} />
-            <span className="mc-spark-lbl">Last 8 readings</span>
+            {batData.length > 1 ? (
+              <Sparkline data={batData} color={batWarn ? '#ef4444' : '#22c55e'} />
+            ) : (
+              <span className="mc-spark-lbl">Waiting for readings…</span>
+            )}
+            {batData.length > 1 && <span className="mc-spark-lbl">Last {batData.length} readings</span>}
           </div>
-          {batWarn && <div className="mc-warn-badge">⚠ Low battery</div>}
+          {batWarn && source.batteryLevel !== undefined && (
+            <div className="mc-warn-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <AlertCircle size={12} strokeWidth={2.5} />
+              <span>Low battery</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -190,19 +247,19 @@ export default function CurrentAttributes({ onViewHistory }: Props) {
           <div className="coord-grid">
             <div className="coord-item">
               <span className="coord-lbl">Latitude</span>
-              <span className="coord-val">{petData.coordinates.latitude.toFixed(4)}°</span>
+              <span className="coord-val">{source.coordinates?.latitude ? `${source.coordinates.latitude.toFixed(4)}°` : '--'}</span>
             </div>
             <div className="coord-item">
               <span className="coord-lbl">Longitude</span>
-              <span className="coord-val">{petData.coordinates.longitude.toFixed(4)}°</span>
+              <span className="coord-val">{source.coordinates?.longitude ? `${source.coordinates.longitude.toFixed(4)}°` : '--'}</span>
             </div>
             <div className="coord-item">
               <span className="coord-lbl">Pet ID</span>
-              <span className="coord-val mono">{petData.petId.slice(-8)}</span>
+              <span className="coord-val mono">{source.petId ? source.petId.slice(-8) : '--'}</span>
             </div>
             <div className="coord-item">
               <span className="coord-lbl">Collar ID</span>
-              <span className="coord-val mono">{petData.collarId.slice(-8)}</span>
+              <span className="coord-val mono">{source.collarId ? source.collarId.slice(-8) : '--'}</span>
             </div>
           </div>
         </div>
@@ -214,7 +271,7 @@ export default function CurrentAttributes({ onViewHistory }: Props) {
           </div>
           <div className="summary-grid">
             <div className="summary-item">
-              <span className="summary-num">{petData.history.length}</span>
+              <span className="summary-num">{historyLen}</span>
               <span className="summary-lbl">Total readings</span>
             </div>
             <div className="summary-item">

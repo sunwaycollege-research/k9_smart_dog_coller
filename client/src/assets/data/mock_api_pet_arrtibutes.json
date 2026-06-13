@@ -3,23 +3,14 @@
     "petId": "64a1f2c3e4b5d6789abcdef0",
     "collarId": "64a1f2c3e4b5d6789abcdef1",
     "coordinates": {
-      "latitude": 37.7749,
-      "longitude": -122.4194
+      "latitude": 27.705578,
+      "longitude": 85.334061
     },
     "heartRate": 85,
     "temperature": 38.5,
     "batteryLevel": 60,
     "status": "active",
     "history": [
-      {
-        "_id": "64b2a3d4f5c6e7890bcdefa1",
-        "coordinates": { "latitude": 37.7720, "longitude": -122.4160 },
-        "heartRate": 72,
-        "temperature": 38.1,
-        "batteryLevel": 100,
-        "status": "resting",
-        "time": "2024-07-01T06:00:00.000Z"
-      },
       {
         "_id": "64b2a3d4f5c6e7890bcdefa2",
         "coordinates": { "latitude": 37.7728, "longitude": -122.4168 },
@@ -181,6 +172,15 @@
         "batteryLevel": 61,
         "status": "sleeping",
         "time": "2024-07-03T22:00:00.000Z"
+      },
+      {
+        "_id": "64b2a3d4f5c6e7890bcdefa1",
+        "coordinates": { "latitude": 27.705577, "longitude": 85.334029 },
+        "heartRate": 72,
+        "temperature": 38.1,
+        "batteryLevel": 100,
+        "status": "resting",
+        "time": "2024-07-01T06:00:00.000Z"
       }
     ],
     "__v": 0,

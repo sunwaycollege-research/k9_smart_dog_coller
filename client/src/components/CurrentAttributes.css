@@ -1,8 +1,27 @@
+/* ── Tokens ── */
+:root {
+  --gold:      #C9A84C;
+  --bg:        #060404;
+  --surface:   #0e0b08;
+  --surface2:  #141008;
+  --surface3:  #1c1810;
+  --border:    #262013;
+  --border-hi: #3a321d;
+  --text:      #e2dcd0;
+  --muted:     #9e988c;
+  --dimmed:    #544e40;
+  --danger-bg: #2b0f0f;
+  --danger-border: #521c1c;
+  --danger-text: #fca5a5;
+  --success-bg: #0f2b1c;
+}
+
 /* ── Page layout ── */
 .ca-page {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  color: var(--text);
 }
 
 /* ── Header ── */
@@ -17,7 +36,7 @@
 .ca-title {
   font-size: 20px;
   font-weight: 700;
-  color: #1A5276;
+  color: var(--text);
   margin-bottom: 4px;
 }
 
@@ -26,7 +45,7 @@
   align-items: center;
   gap: 5px;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 .ca-header-right {
@@ -45,7 +64,8 @@
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid currentColor;
+  border: 1px solid var(--border-hi);
+  background: var(--surface2);
 }
 
 .status-dot {
@@ -62,21 +82,20 @@
   gap: 6px;
   height: 36px;
   padding: 0 16px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface3);
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: var(--gold);
   cursor: pointer;
   font-family: inherit;
-  transition: border-color .15s, box-shadow .15s;
+  transition: all .15s;
 }
 
 .ca-hist-btn:hover {
-  border-color: #2E86C1;
-  color: #2E86C1;
-  box-shadow: 0 0 0 3px rgba(46, 134, 193, .08);
+  background: var(--surface);
+  border-color: var(--border-hi);
 }
 
 /* ── Metric cards ── */
@@ -87,8 +106,8 @@
 }
 
 .metric-card {
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 18px;
   display: flex;
@@ -100,12 +119,12 @@
 }
 
 .metric-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, .07);
+  border-color: var(--border-hi);
 }
 
 .metric-card.warn {
-  border-color: #fecaca;
-  background: #fff;
+  border-color: var(--danger-border);
+  background: var(--surface);
 }
 
 .metric-card.warn::before {
@@ -144,6 +163,9 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  background: var(--surface3);
+  color: var(--gold);
+  border: 1px solid var(--border);
 }
 
 .mc-info {
@@ -155,7 +177,7 @@
 .mc-label {
   font-size: 11px;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: .06em;
 }
@@ -163,7 +185,7 @@
 .mc-value {
   font-size: 28px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text);
   line-height: 1;
   margin-top: 4px;
 }
@@ -171,12 +193,12 @@
 .mc-unit {
   font-size: 14px;
   font-weight: 500;
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 .mc-range {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--dimmed);
   margin-top: 4px;
 }
 
@@ -188,7 +210,7 @@
 
 .mc-spark-lbl {
   font-size: 10px;
-  color: #cbd5e1;
+  color: var(--dimmed);
   text-align: right;
 }
 
@@ -207,33 +229,35 @@
 .bat-track {
   flex: 1;
   height: 8px;
-  background: #f1f5f9;
+  background: var(--surface3);
   border-radius: 4px;
   overflow: hidden;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 .bat-fill {
   height: 100%;
   border-radius: 4px;
   transition: width .3s;
+  background: var(--gold);
 }
 
 .bat-pct {
   font-size: 13px;
   font-weight: 700;
+  color: var(--text);
   flex-shrink: 0;
 }
 
 /* Warn badge */
 .mc-warn-badge {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--danger-bg);
+  color: var(--danger-text);
   font-size: 11px;
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 6px;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--danger-border);
   align-self: flex-start;
 }
 
@@ -245,8 +269,8 @@
 }
 
 .ca-card {
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 18px;
 }
@@ -254,7 +278,7 @@
 .ca-card-title {
   font-size: 11px;
   font-weight: 700;
-  color: #374151;
+  color: var(--gold);
   text-transform: uppercase;
   letter-spacing: .07em;
   margin-bottom: 14px;
@@ -278,7 +302,7 @@
 
 .coord-lbl {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .05em;
@@ -287,13 +311,13 @@
 .coord-val {
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--text);
 }
 
 .coord-val.mono {
   font-family: ui-monospace, Consolas, monospace;
   font-size: 13px;
-  color: #2E86C1;
+  color: var(--gold);
 }
 
 /* Summary grid */
@@ -308,20 +332,20 @@
   flex-direction: column;
   gap: 3px;
   padding: 12px;
-  background: #f8fafc;
+  background: var(--surface2);
   border-radius: 10px;
-  border: 1px solid #f1f5f9;
+  border: 1px solid var(--border);
 }
 
 .summary-num {
   font-size: 22px;
   font-weight: 700;
-  color: #1A5276;
+  color: var(--text);
 }
 
 .summary-lbl {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 /* ── Responsive ── */

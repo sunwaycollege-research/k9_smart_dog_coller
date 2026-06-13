@@ -1,28 +1,88 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* ── Tailwind v4: custom theme extensions ─────────────────────────────────── */
+@theme {
+  --animate-antigravity: antigravity 4s ease-in-out infinite;
+  --animate-antigravity-slow: antigravity 6s ease-in-out infinite;
+  --animate-antigravity-offset: antigravity 4s ease-in-out 1s infinite;
+}
+
+@keyframes antigravity {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  25% {
+    transform: translateY(-14px) rotate(0.4deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(-0.3deg);
+  }
+
+  75% {
+    transform: translateY(-18px) rotate(0.2deg);
+  }
+
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Custom scrollbar (app-like) ──────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2e2614;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #544622;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2e2614 #060404;
+}
+
+/* ── Text selection ───────────────────────────────────────────────────────── */
+::selection {
+  background: #544622;
+  color: #fff;
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: #EBF5FB;
-  color: #0f172a;
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  background: #0a0a1a;
+  color: #fff;
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font-family: inherit;
 }

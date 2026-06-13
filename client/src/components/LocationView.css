@@ -1,0 +1,224 @@
+/* ── Tokens ── */
+:root {
+  --gold:      #C9A84C;
+  --bg:        #060404;
+  --surface:   #0e0b08;
+  --surface2:  #141008;
+  --surface3:  #1c1810;
+  --border:    #262013;
+  --border-hi: #3a321d;
+  --text:      #e2dcd0;
+  --muted:     #9e988c;
+  --dimmed:    #544e40;
+  --danger-bg: #2b0f0f;
+  --danger-border: #521c1c;
+  --danger-text: #fca5a5;
+  --success-bg: #0f2b1c;
+  --success-text: #86efac;
+}
+
+.lv-root {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 780px;
+  color: var(--text);
+}
+
+/* ── Section card ─────────────────────────────────────────────────────────── */
+
+.lv-section {
+  background: var(--surface);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px #000000;
+  overflow: hidden;
+}
+
+.lv-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.lv-section-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--text);
+  flex: 1;
+}
+
+.lv-icon {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+/* ── Edit button ──────────────────────────────────────────────────────────── */
+
+.lv-edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+  background: var(--surface3);
+  border: 1px solid var(--border-hi);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+}
+
+.lv-edit-btn:hover {
+  background: var(--border-hi);
+  color: #fff;
+}
+
+/* ── Home-set chip ────────────────────────────────────────────────────────── */
+
+.lv-home-set-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px 14px;
+  font-size: 13px;
+  color: var(--success-text);
+  font-weight: 500;
+}
+
+.lv-chip-icon { color: var(--success-text); flex-shrink: 0; }
+
+/* ── Placement panel ──────────────────────────────────────────────────────── */
+
+.lv-placement-panel {
+  padding: 14px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lv-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.lv-placement-map {
+  height: 300px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+}
+
+/* Leaflet cursor feedback */
+.lv-placement-map .leaflet-container {
+  cursor: crosshair !important;
+}
+
+/* Home pin marker */
+.lv-home-pin {
+  font-size: 26px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px #000000);
+}
+
+/* ── Coord preview ────────────────────────────────────────────────────────── */
+
+.lv-coord-preview {
+  font-size: 12.5px;
+  font-family: 'Courier New', monospace;
+  color: var(--gold);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+/* ── Actions row ──────────────────────────────────────────────────────────── */
+
+.lv-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.lv-save-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  border-radius: 9px;
+  padding: 10px 20px;
+  font-size: 13.5px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+}
+
+.lv-save-btn:disabled { opacity: .55; cursor: not-allowed; }
+.lv-save-btn:not(:disabled):hover { opacity: .9; transform: translateY(-1px); }
+
+.lv-cancel-btn {
+  background: var(--surface3);
+  color: var(--text);
+  border: 1px solid var(--border-hi);
+  border-radius: 9px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.lv-cancel-btn:hover { background: var(--surface2); }
+
+/* ── Success / error messages ─────────────────────────────────────────────── */
+
+.lv-success {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 18px 14px;
+  padding: 8px 12px;
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  border-radius: 7px;
+  font-size: 13px;
+  color: var(--success-text);
+  font-weight: 500;
+}
+
+.lv-error {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  border-radius: 7px;
+  font-size: 13px;
+  color: var(--danger-text);
+}
+
+/* ── Spinner ──────────────────────────────────────────────────────────────── */
+
+.lv-spin {
+  animation: lv-spin 0.8s linear infinite;
+}
+
+@keyframes lv-spin {
+  to { transform: rotate(360deg); }
+}

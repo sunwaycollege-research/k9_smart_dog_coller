@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { Activity, Thermometer, BatteryFull, MapPin, ArrowLeft, Route, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Activity, Thermometer, BatteryFull, MapPin, ArrowLeft, Route, AlertCircle } from 'lucide-react'
 import petData from '../assets/data/mock_api_pet_arrtibutes.json'
+import { useGetPetAttributesQuery } from '../store/apiSlice'
+import type { PetAttributes } from '../store/apiSlice'
 import PetMap from './PetMap'
 import './AttributesHistory.css'
 
@@ -26,7 +28,10 @@ function haversineM(lat1: number, lon1: number, lat2: number, lon2: number): num
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-function calcTotalDistance(entries: typeof petData.history): number {
+function calcTotalDistance(entries: { coordinates: { latitude: number; longitude: number } }[]): number {
+  if (entries.length < 2) return 0
+  // Since entries are sorted recent-first (newest first), we reduce in reverse or normal order.
+  // The distance between consecutive items is the same regardless of direction.
   return entries.slice(1).reduce((total, h, i) => {
     const prev = entries[i]
     return (
@@ -47,51 +52,56 @@ function fmtDist(meters: number): string {
   return `${(meters / 1000).toFixed(2)} km`
 }
 
-// Group history entries by date string (YYYY-MM-DD)
-const grouped: Record<string, typeof petData.history> = {}
-petData.history.forEach(h => {
-  const date = h.time.split('T')[0]
-  if (!grouped[date]) grouped[date] = []
-  grouped[date].push(h)
-})
-
-// Sorted most-recent-first
-const DATES = Object.keys(grouped).sort().reverse()
-const DAY_LABELS = ['Today', 'Yesterday', 'Day Before']
-
 interface Props {
   onBack: () => void
+  attributes?: PetAttributes | null
+  petId?: string
 }
 
-export default function AttributesHistory({ onBack }: Props) {
-  const [dayIdx, setDayIdx] = useState(0)
+export default function AttributesHistory({ onBack, attributes, petId }: Props) {
+  const [page, setPage] = useState(1)
   const [filter, setFilter] = useState<StatusFilter>('all')
 
-  const currentDate = DATES[dayIdx]
-  const dayData     = grouped[currentDate] ?? []
-  const filtered    = filter === 'all' ? dayData : dayData.filter(h => h.status === filter)
+  const isDemo = !petId
+  const { data: dbData, isLoading } = useGetPetAttributesQuery(
+    { petId: petId || '', page, limit: 10 },
+    { skip: isDemo }
+  )
 
-  const distance = calcTotalDistance(dayData)
-  const avgHR    = dayData.length
-    ? Math.round(dayData.reduce((s, h) => s + h.heartRate, 0) / dayData.length)
+  const source = isDemo ? (attributes || petData) : (dbData?.attributes || attributes || petData)
+
+  const historyEntries = source.history || []
+  const totalEntries = isDemo ? historyEntries.length : ((source as any).totalHistoryCount || historyEntries.length)
+  const totalPages = Math.max(1, Math.ceil(totalEntries / 10))
+
+  // For demo/mock data we do client-side pagination
+  const paginatedEntries = isDemo
+    ? historyEntries.slice((page - 1) * 10, page * 10)
+    : historyEntries
+
+  const filtered = filter === 'all' ? paginatedEntries : paginatedEntries.filter(h => h.status === filter)
+
+  const distance = calcTotalDistance(paginatedEntries)
+  const avgHR    = paginatedEntries.length
+    ? Math.round(paginatedEntries.reduce((s, h) => s + h.heartRate, 0) / paginatedEntries.length)
     : 0
-  const avgTemp  = dayData.length
-    ? (dayData.reduce((s, h) => s + h.temperature, 0) / dayData.length).toFixed(1)
+  const avgTemp  = paginatedEntries.length
+    ? (paginatedEntries.reduce((s, h) => s + h.temperature, 0) / paginatedEntries.length).toFixed(1)
     : '—'
 
-  const mapPath   = dayData.map(h => h.coordinates)
-  const mapCenter = dayData[dayData.length - 1]?.coordinates ?? petData.coordinates
-
-  const fmtDate = (iso: string) =>
-    new Date(iso + 'T12:00:00').toLocaleDateString('en-US', {
-      weekday: 'long', month: 'long', day: 'numeric',
-    })
-
-  const fmtShort = (iso: string) =>
-    new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  const mapPath   = paginatedEntries.map(h => h.coordinates)
+  const mapCenter = paginatedEntries[0]?.coordinates ?? source.coordinates ?? { latitude: 27.705578, longitude: 85.334061 }
 
   return (
     <div className="ah-page">
+      {/* Demo Warning Banner */}
+      {isDemo && (
+        <div className="lv-error" style={{ marginBottom: 16 }}>
+          <AlertCircle size={15} />
+          <span>Demo Data: Collar has not transmitted any coordinates or metrics yet.</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="ah-header">
         <button className="ah-back" onClick={onBack}>
@@ -99,226 +109,227 @@ export default function AttributesHistory({ onBack }: Props) {
         </button>
         <div className="ah-title-group">
           <h2>Attributes History</h2>
-          <p>{petData.history.length} total readings · {DATES.length} days tracked</p>
+          <p>{totalEntries} total readings · Page {page} of {totalPages}</p>
         </div>
       </div>
 
-      {/* Day tabs */}
-      <div className="day-tabs-wrap">
-        <button
-          className="day-nav-btn"
-          onClick={() => { setDayIdx(i => Math.min(i + 1, DATES.length - 1)); setFilter('all') }}
-          disabled={dayIdx >= DATES.length - 1}
-        >
-          <ChevronLeft size={16} />
-        </button>
-
-        <div className="day-tabs">
-          {DATES.map((d, i) => {
-            const dist = calcTotalDistance(grouped[d] ?? [])
-            return (
-              <button
-                key={d}
-                className={`day-tab${dayIdx === i ? ' active' : ''}`}
-                onClick={() => { setDayIdx(i); setFilter('all') }}
-              >
-                <span className="day-tab-label">{DAY_LABELS[i] ?? d}</span>
-                <span className="day-tab-date">{fmtShort(d)}</span>
-                <span className="day-tab-dist">
-                  <Route size={10} strokeWidth={2} />
-                  {fmtDist(dist)}
-                </span>
-              </button>
-            )
-          })}
+      {isLoading ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', color: '#94a3b8' }}>
+          <span>Loading historical readings...</span>
         </div>
-
-        <button
-          className="day-nav-btn"
-          onClick={() => { setDayIdx(i => Math.max(i - 1, 0)); setFilter('all') }}
-          disabled={dayIdx <= 0}
-        >
-          <ChevronRight size={16} />
-        </button>
-      </div>
-
-      {/* Day summary cards */}
-      <div className="day-summary">
-        <div className="dsc dsc-highlight">
-          <div className="dsc-icon" style={{ background: '#E8F4FD', color: '#2E86C1' }}>
-            <Route size={20} strokeWidth={1.8} />
-          </div>
-          <div>
-            <div className="dsc-val">{fmtDist(distance)}</div>
-            <div className="dsc-lbl">Distance traveled</div>
-          </div>
-        </div>
-        <div className="dsc">
-          <div className="dsc-icon" style={{ background: '#fef3c7', color: '#d97706' }}>
-            <Activity size={20} strokeWidth={1.8} />
-          </div>
-          <div>
-            <div className="dsc-val">{avgHR} <span className="dsc-unit">bpm</span></div>
-            <div className="dsc-lbl">Avg heart rate</div>
-          </div>
-        </div>
-        <div className="dsc">
-          <div className="dsc-icon" style={{ background: '#fff7ed', color: '#f97316' }}>
-            <Thermometer size={20} strokeWidth={1.8} />
-          </div>
-          <div>
-            <div className="dsc-val">{avgTemp} <span className="dsc-unit">°C</span></div>
-            <div className="dsc-lbl">Avg temperature</div>
-          </div>
-        </div>
-        <div className="dsc">
-          <div className="dsc-icon" style={{ background: '#f0fdf4', color: '#22c55e' }}>
-            <BatteryFull size={20} strokeWidth={1.8} />
-          </div>
-          <div>
-            <div className="dsc-val">
-              {dayData.filter(h => h.status === 'active').length}
-              <span className="dsc-unit">/{dayData.length}</span>
+      ) : (
+        <>
+          {/* Day summary cards */}
+          <div className="day-summary">
+            <div className="dsc dsc-highlight">
+              <div className="dsc-icon" style={{ background: '#E8F4FD', color: '#2E86C1' }}>
+                <Route size={20} strokeWidth={1.8} />
+              </div>
+              <div>
+                <div className="dsc-val">{fmtDist(distance)}</div>
+                <div className="dsc-lbl">Distance on page</div>
+              </div>
             </div>
-            <div className="dsc-lbl">Active readings</div>
+            <div className="dsc">
+              <div className="dsc-icon" style={{ background: '#fef3c7', color: '#d97706' }}>
+                <Activity size={20} strokeWidth={1.8} />
+              </div>
+              <div>
+                <div className="dsc-val">{avgHR} <span className="dsc-unit">bpm</span></div>
+                <div className="dsc-lbl">Avg heart rate</div>
+              </div>
+            </div>
+            <div className="dsc">
+              <div className="dsc-icon" style={{ background: '#fff7ed', color: '#f97316' }}>
+                <Thermometer size={20} strokeWidth={1.8} />
+              </div>
+              <div>
+                <div className="dsc-val">{avgTemp} <span className="dsc-unit">°C</span></div>
+                <div className="dsc-lbl">Avg temperature</div>
+              </div>
+            </div>
+            <div className="dsc">
+              <div className="dsc-icon" style={{ background: '#f0fdf4', color: '#22c55e' }}>
+                <Activity size={20} strokeWidth={1.8} />
+              </div>
+              <div>
+                <div className="dsc-val">
+                  {paginatedEntries.filter(h => h.status === 'active').length}
+                  <span className="dsc-unit">/{paginatedEntries.length}</span>
+                </div>
+                <div className="dsc-lbl">Active readings</div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Map section */}
-      <div className="ah-map-section">
-        <div className="ah-map-header">
-          <div>
-            <span className="ah-map-title">Path trace · {fmtDate(currentDate)}</span>
-            <span className="ah-map-sub">
-              {fmtDist(distance)} total · {dayData.length} readings
-            </span>
+          {/* Map section */}
+          {paginatedEntries.length > 0 && (
+            <div className="ah-map-section">
+              <div className="ah-map-header">
+                <div>
+                  <span className="ah-map-title">Path trace (Page {page})</span>
+                  <span className="ah-map-sub">
+                    {fmtDist(distance)} total · {paginatedEntries.length} readings shown
+                  </span>
+                </div>
+              </div>
+              {/* key forces map remount on page/filter change */}
+              <PetMap key={`${page}-${filter}`} center={mapCenter} path={mapPath} height={260} showZones={false} />
+            </div>
+          )}
+
+          {/* Status filter */}
+          <div className="ah-filters">
+            <span className="filter-label">Filter Page:</span>
+            {(['all', 'active', 'resting', 'sleeping'] as StatusFilter[]).map(s => (
+              <button
+                key={s}
+                className={`filter-btn${filter === s ? ' active' : ''}`}
+                onClick={() => setFilter(s)}
+                style={
+                  filter === s && s !== 'all'
+                    ? {
+                        color:       STATUS_STYLE[s]?.color,
+                        background:  STATUS_STYLE[s]?.bg,
+                        borderColor: STATUS_STYLE[s]?.color,
+                      }
+                    : undefined
+                }
+              >
+                {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
+              </button>
+            ))}
+            <span className="filter-count">{filtered.length} record{filtered.length !== 1 ? 's' : ''}</span>
           </div>
-        </div>
-        {/* key forces map remount on day change so fitBounds resets */}
-        <PetMap key={currentDate} center={mapCenter} path={mapPath} height={260} showZones={false} />
-      </div>
 
-      {/* Status filter */}
-      <div className="ah-filters">
-        <span className="filter-label">Filter:</span>
-        {(['all', 'active', 'resting', 'sleeping'] as StatusFilter[]).map(s => (
-          <button
-            key={s}
-            className={`filter-btn${filter === s ? ' active' : ''}`}
-            onClick={() => setFilter(s)}
-            style={
-              filter === s && s !== 'all'
-                ? {
-                    color:       STATUS_STYLE[s]?.color,
-                    background:  STATUS_STYLE[s]?.bg,
-                    borderColor: STATUS_STYLE[s]?.color,
-                  }
-                : undefined
-            }
-          >
-            {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
-          </button>
-        ))}
-        <span className="filter-count">{filtered.length} record{filtered.length !== 1 ? 's' : ''}</span>
-      </div>
-
-      {/* Readings table */}
-      <div className="ah-table-wrap">
-        {filtered.length === 0 ? (
-          <div className="ah-empty">No readings match this filter for {DAY_LABELS[dayIdx]}.</div>
-        ) : (
-          <table className="ah-table">
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Status</th>
-                <th><Activity size={12} /> Heart Rate</th>
-                <th><Thermometer size={12} /> Temperature</th>
-                <th><BatteryFull size={12} /> Battery</th>
-                <th><MapPin size={12} /> Location</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((h, i) => {
-                const d     = new Date(h.time)
-                const st    = STATUS_STYLE[h.status] ?? STATUS_STYLE.active
-                const hrW   = h.heartRate   < HR_NORMAL[0]  || h.heartRate   > HR_NORMAL[1]
-                const tmpW  = h.temperature < TMP_NORMAL[0] || h.temperature > TMP_NORMAL[1]
-                const batC  = h.batteryLevel > 50 ? '#22c55e' : h.batteryLevel > 20 ? '#f59e0b' : '#ef4444'
-
-                // Step distance from the previous point in filtered list
-                const stepDist =
-                  i > 0
-                    ? haversineM(
-                        filtered[i - 1].coordinates.latitude,
-                        filtered[i - 1].coordinates.longitude,
-                        h.coordinates.latitude,
-                        h.coordinates.longitude
-                      )
-                    : null
-
-                return (
-                  <tr key={h._id}>
-                    <td>
-                      <div className="td-time-main">
-                        {d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                      </div>
-                      {stepDist !== null && stepDist > 1 && (
-                        <div className="td-step-dist">+{fmtDist(stepDist)}</div>
-                      )}
-                    </td>
-
-                    <td>
-                      <span className="status-chip" style={{ color: st.color, background: st.bg }}>
-                        <span className="status-dot" style={{ background: st.color }} />
-                        {h.status.charAt(0).toUpperCase() + h.status.slice(1)}
-                      </span>
-                    </td>
-
-                    <td>
-                      <div className={`td-metric${hrW ? ' td-warn' : ''}`}>
-                        <span className="td-num">{h.heartRate}</span>
-                        <span className="td-unit"> bpm</span>
-                        {hrW && <span className="td-flag">⚠</span>}
-                      </div>
-                    </td>
-
-                    <td>
-                      <div className={`td-metric${tmpW ? ' td-warn' : ''}`}>
-                        <span className="td-num">{h.temperature}</span>
-                        <span className="td-unit"> °C</span>
-                        {tmpW && <span className="td-flag">⚠</span>}
-                      </div>
-                    </td>
-
-                    <td>
-                      <div className="td-battery">
-                        <div className="td-bat-track">
-                          <div
-                            className="td-bat-fill"
-                            style={{ width: `${h.batteryLevel}%`, background: batC }}
-                          />
-                        </div>
-                        <span style={{ color: batC, fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' }}>
-                          {h.batteryLevel}%
-                        </span>
-                      </div>
-                    </td>
-
-                    <td>
-                      <span className="td-coord">
-                        {h.coordinates.latitude.toFixed(4)},{' '}
-                        {h.coordinates.longitude.toFixed(4)}
-                      </span>
-                    </td>
+          {/* Readings table */}
+          <div className="ah-table-wrap">
+            {filtered.length === 0 ? (
+              <div className="ah-empty">No readings match this filter on page {page}.</div>
+            ) : (
+              <table className="ah-table">
+                <thead>
+                  <tr>
+                    <th>Date &amp; Time</th>
+                    <th>Status</th>
+                    <th><Activity size={12} /> Heart Rate</th>
+                    <th><Thermometer size={12} /> Temperature</th>
+                    <th><BatteryFull size={12} /> Battery</th>
+                    <th><MapPin size={12} /> Location</th>
                   </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        )}
-      </div>
+                </thead>
+                <tbody>
+                  {filtered.map((h, i) => {
+                    const d     = new Date(h.time)
+                    const st    = STATUS_STYLE[h.status] ?? STATUS_STYLE.active
+                    const hrW   = h.heartRate   < HR_NORMAL[0]  || h.heartRate   > HR_NORMAL[1]
+                    const tmpW  = h.temperature < TMP_NORMAL[0] || h.temperature > TMP_NORMAL[1]
+                    const batC  = h.batteryLevel > 50 ? '#22c55e' : h.batteryLevel > 20 ? '#f59e0b' : '#ef4444'
+
+                    // Step distance from the next point in chronological order.
+                    // Since the list is reversed (recent-first), the "previous" chronological point
+                    // is index i + 1.
+                    const stepDist =
+                      i < filtered.length - 1
+                        ? haversineM(
+                            filtered[i + 1].coordinates.latitude,
+                            filtered[i + 1].coordinates.longitude,
+                            h.coordinates.latitude,
+                            h.coordinates.longitude
+                          )
+                        : null
+
+                    return (
+                      <tr key={i}>
+                        <td>
+                          <div className="td-time-main">
+                            {d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </div>
+                          <div className="td-time">
+                            {d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                          </div>
+                          {stepDist !== null && stepDist > 1 && (
+                            <div className="td-step-dist">+{fmtDist(stepDist)}</div>
+                          )}
+                        </td>
+
+                        <td>
+                          <span className="status-chip" style={{ color: st.color, background: st.bg }}>
+                            <span className="status-dot" style={{ background: st.color }} />
+                            {h.status.charAt(0).toUpperCase() + h.status.slice(1)}
+                          </span>
+                        </td>
+
+                        <td>
+                          <div className={`td-metric${hrW ? ' td-warn' : ''}`}>
+                            <span className="td-num">{h.heartRate}</span>
+                            <span className="td-unit"> bpm</span>
+                            {hrW && <AlertCircle size={12} strokeWidth={2.5} className="td-flag" style={{ color: '#dc2626', display: 'inline-block', verticalAlign: 'middle' }} />}
+                          </div>
+                        </td>
+
+                        <td>
+                          <div className={`td-metric${tmpW ? ' td-warn' : ''}`}>
+                            <span className="td-num">{h.temperature}</span>
+                            <span className="td-unit"> °C</span>
+                            {tmpW && <AlertCircle size={12} strokeWidth={2.5} className="td-flag" style={{ color: '#dc2626', display: 'inline-block', verticalAlign: 'middle' }} />}
+                          </div>
+                        </td>
+
+                        <td>
+                          <div className="td-battery">
+                            <div className="td-bat-track">
+                              <div
+                                className="td-bat-fill"
+                                style={{ width: `${h.batteryLevel}%`, background: batC }}
+                              />
+                            </div>
+                            <span style={{ color: batC, fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                              {h.batteryLevel}%
+                            </span>
+                          </div>
+                        </td>
+
+                        <td>
+                          <span className="td-coord">
+                            {h.coordinates.latitude.toFixed(4)},{' '}
+                            {h.coordinates.longitude.toFixed(4)}
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="pagination-controls" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', background: '#fff', padding: '12px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+              <button
+                className="filter-btn"
+                onClick={() => setPage(p => Math.max(p - 1, 1))}
+                disabled={page === 1}
+                style={{ opacity: page === 1 ? 0.5 : 1, cursor: page === 1 ? 'default' : 'pointer' }}
+              >
+                Previous
+              </button>
+              <span style={{ fontSize: '13px', fontWeight: 600, color: '#374151' }}>
+                Page {page} of {totalPages}
+              </span>
+              <button
+                className="filter-btn"
+                onClick={() => setPage(p => Math.min(p + 1, totalPages))}
+                disabled={page >= totalPages}
+                style={{ opacity: page >= totalPages ? 0.5 : 1, cursor: page >= totalPages ? 'default' : 'pointer' }}
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }
