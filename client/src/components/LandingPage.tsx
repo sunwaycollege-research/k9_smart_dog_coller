@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Check, MapPin, HeartPulse, Thermometer, BatteryMedium, History, UserRound, Link2, ShieldCheck } from 'lucide-react'
+import { MapPin, HeartPulse, Thermometer, BatteryMedium, History, UserRound, Link2, ShieldCheck } from 'lucide-react'
 import { useAppSelector } from '../store/hooks'
 import { products } from '../data/products'
 import ProductSequenceScroll from './ProductSequenceScroll'
@@ -12,7 +12,7 @@ import PawtrackMiniMap from './PawtrackMiniMap'
 // ── Static canvas frames (Vite resolves to hashed URLs) ──────────────────────
 import frame001 from '../assets/petcollar.jpeg'
 import frame075 from '../assets/canvas/ezgif-frame-075.jpg'
-import frame150 from '../assets/canvas/ezgif-frame-150.jpg'
+
 import frame220 from '../assets/canvas/ezgif-frame-220.jpg'
 import frame280 from '../assets/canvas/ezgif-frame-280.jpg'
 
@@ -35,16 +35,7 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
   )
 }
 
-function Badge({ label }: { label: string }) {
-  return (
-    <span
-      className="inline-block text-[10px] font-bold uppercase tracking-[0.22em] px-3 py-1 rounded-full border mb-5"
-      style={{ color: GOLD, borderColor: `${GOLD}35`, background: `${GOLD}12` }}
-    >
-      {label}
-    </span>
-  )
-}
+
 
 // Shared stick-image frame container
 function StickImage({ src, alt, className = '' }: { src: string; alt: string; className?: string }) {

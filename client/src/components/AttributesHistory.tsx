@@ -71,7 +71,7 @@ export default function AttributesHistory({ onBack, attributes, petId }: Props) 
   const source = isDemo ? (attributes || petData) : (dbData?.attributes || attributes || petData)
 
   const historyEntries = source.history || []
-  const totalEntries = isDemo ? historyEntries.length : ((source as any).totalHistoryCount || historyEntries.length)
+  const totalEntries = isDemo ? historyEntries.length : ((source as { totalHistoryCount?: number }).totalHistoryCount || historyEntries.length)
   const totalPages = Math.max(1, Math.ceil(totalEntries / 10))
 
   // For demo/mock data we do client-side pagination

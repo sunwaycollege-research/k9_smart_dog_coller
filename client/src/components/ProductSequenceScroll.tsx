@@ -61,7 +61,7 @@ export default function ProductSequenceScroll({ product }: Props) {
   })
 
   // ── Draw a specific frame (object-cover: fills full viewport) ──────────────
-  const drawFrame = (idx: number) => {
+  function drawFrame(idx: number) {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')

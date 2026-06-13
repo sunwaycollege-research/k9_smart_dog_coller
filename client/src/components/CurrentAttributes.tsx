@@ -100,8 +100,8 @@ export default function CurrentAttributes({ onViewHistory, attributes }: Props) 
 
   const activeCount = history.filter(h => h.status === 'active').length
 
-  const lastUpdated = (source as any).updatedAt
-    ? new Date((source as any).updatedAt).toLocaleString('en-US', {
+  const lastUpdated = (source as { updatedAt?: string | number | Date }).updatedAt
+    ? new Date((source as { updatedAt?: string | number | Date }).updatedAt!).toLocaleString('en-US', {
         month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
       })
     : 'Never'
