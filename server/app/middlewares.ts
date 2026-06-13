@@ -5,6 +5,7 @@ const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "http://localhost:4173",
   "https://skkcg1pw-3000.inc1.devtunnels.ms",
+  "https://k9-smart-dog-coller-fu4c.vercel.app",
 ];
 
 export default function applyMiddleware(app: Express) {
