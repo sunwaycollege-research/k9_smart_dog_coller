@@ -3,7 +3,7 @@
 
 #define RXD1 44   // D7 ->  TX
 #define TXD1 43   // D6 ->  RX
-#define PPS_PIN 1 // D0 ->  PPS
+#define PPS_PIN 2 // D0 ->  PPS
 
 #define GPS_BAUDRATE 9600
 
@@ -88,3 +88,4 @@ void loop() {
     Serial.println("----------------------------");
   }
 }
+
